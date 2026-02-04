@@ -1,18 +1,15 @@
 import React, { useState } from "react";
+import { Parser } from "expr-eval"; // Safe math parser
 
-// Safe evaluation function supporting +, -, *, / and BODMAS
 const safeEval = (expr) => {
   try {
-    // Replace all instances of double operators (like "--") if any
-    expr = expr.replace(/--/g, "+");
-
     // Only allow digits, operators, parentheses, and decimal points
     if (/[^0-9+\-*/(). ]/.test(expr)) {
       return "Error";
     }
 
-    // Use Function constructor safely
-    const result = Function(`"use strict"; return (${expr})`)();
+    const parser = new Parser();
+    const result = parser.evaluate(expr);
     return result;
   } catch {
     return "Error";
@@ -43,7 +40,7 @@ const Calculator = () => {
 
   return (
     <div style={{ width: "250px", margin: "50px auto", textAlign: "center" }}>
-        <h1>React Calculator</h1>
+      <h1>React Calculator</h1>
       <input
         type="text"
         value={input}
